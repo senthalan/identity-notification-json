@@ -15,32 +15,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.wso2.carbon.identity.notification.mgt.json.internal;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.identity.notification.mgt.NotificationSendingModule;
 import org.wso2.carbon.identity.notification.mgt.json.JsonMessageModule;
-
-/**
- * @scr.component name="carbon.identity.notification.mgt.json" immediate="true"
- */
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 @SuppressWarnings("unused")
+@Component(
+         name = "carbon.identity.notification.mgt.json", 
+         immediate = true)
 public class JsonMessageSendingServiceComponent {
 
     private static Log log = LogFactory.getLog(JsonMessageSendingServiceComponent.class);
 
+    @Activate
     protected void activate(ComponentContext ctxt) {
-        // Using try catch to whole activator. Unless if something goes wrong (configuration failure) module will keep
         // trying to start
         try {
             // Registering json message sending module on user operation for entitlement component
-            ctxt.getBundleContext().registerService(NotificationSendingModule.class.getName(),
-                    new JsonMessageModule(), null);
+            ctxt.getBundleContext().registerService(NotificationSendingModule.class.getName(), new JsonMessageModule(), null);
             if (log.isDebugEnabled()) {
                 log.debug("REST JSON notification sending component is activated ");
             }
@@ -50,9 +52,11 @@ public class JsonMessageSendingServiceComponent {
         }
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext ctxt) {
         if (log.isDebugEnabled()) {
             log.debug("REST JSON notification sending module is deactivated");
         }
     }
 }
+
